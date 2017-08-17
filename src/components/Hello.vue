@@ -5,8 +5,13 @@
       <p>Enter your information, copy, paste, and you're good to go.</p>
     </div>
     <div class="row">
-      <div class="col">
+      <div class="col-12 form-wrapper">
         <h5>Enter your information here:</h5>
+        <div class="form-group">
+          <label>Image:</label>
+          <input class="form-control" v-model="image">
+           <small id="emailHelp" class="form-text text-muted">Choose a publicly accessible url, like your Gravatar image, or an image on the new website.</small>
+        </div>
 
         <div class="form-group">
           <label>Name:</label>
@@ -19,56 +24,65 @@
         </div>
 
         <div class="form-group">
-          <label>Image:</label>
-          <input class="form-control" v-model="image">
+          <label>Department:</label>
+          <input class="form-control" v-model="department">
         </div>
 
-        <div class="form-group">
-          <label>Phone:</label>
-          <input class="form-control" v-model="phone">
+        <h5 class="section-break">Contact information:</h5>
+        <div v-for="(item, key) in contact" class="form-group">
+          <label>{{ key | capitalize }}:</label>
+          <input class="form-control" v-model="contact[key]">
         </div>
 
-        <div class="form-group">
-          <label>Cell:</label>
-          <input class="form-control" v-model="cell">
+        <h5 class="section-break">Social accounts:</h5>
+        <div v-for="(item, key) in social" class="form-group">
+          <label>{{ key | capitalize }}:</label>
+          <input class="form-control" v-model="social[key]">
         </div>
       </div>
-      <div class="col">
+      <div class="col signature-renderer">
         <h5>Copy & paste from here:</h5>
         <div id="signature" style="padding: 10px">
-          <div class="copy-this" v-html="signature"></div>
+          <div id="copy-this" v-html="signature"></div>
+        </div>
+        <div class="wrapper">
+          <button class="btn" @click="selectText">Copy to Clipboard</button>
+          <p v-if="successtext">{{ successtext }}</p>
         </div>
       </div>
 
     </div>
-    <img src="assets/plf-logo.png">
   </div>
 </template>
 
 <script>
 import { mjml2html } from 'mjml'
-const md5 = require('js-md5')
+const cheerio = require('cheerio')
+
 export default {
   name: 'hello',
   data () {
     return {
-      name: 'Robert L. Krauter',
-      title: 'Chief Communications Officer',
-      department: 'Communications Department',
+      name: 'Your Name Here',
+      title: 'Your title here',
+      department: 'You Can List A Department',
       image: 'https://en.gravatar.com/avatar/c5944e489306f210199feb557d4693a7?s=200',
-      email: 'RKrauter@pacificlegal.org',
-      phone: '555-555-5555',
-      cell: '555-555-5555',
-      profile: 'http://www.pacificlegal.com/staff/robert-krauter',
+      contact: {
+        email: 'your.email@address.com',
+        phone: '555-555-5555',
+        cell: '555-555-5555',
+        profile: 'http://www.pacificlegal.com/staff/this-feature-coming-soon'
+      },
       social: {
-        facebook: 'http://www.facebook.com',
-        twitter: 'http://www.twitter.com',
-        instagram: 'http://www.instagram.com'
+        facebook: 'http://www.facebook.com/PacificLegalFoundation/',
+        twitter: 'https://twitter.com/PacificLegal',
+        instagram: 'http://instagram.com/pacific_legal_foundation'
       },
       vars: {
         cobalt: '#0053BC',
         yellow: '#F4B73E'
-      }
+      },
+      successtext: ''
     }
   },
   computed: {
@@ -84,22 +98,47 @@ export default {
 
       return r
     },
+    contactInfo: function() {
+      var app = this
+      var obj = this.contact
+      var r = ""
+
+      for (var s in obj) {
+        if(obj.hasOwnProperty(s) && obj[s]) {
+          r += `<span style="font-color:black">${s}:</span> <span><a style="color: ${app.vars.cobalt}; font-weight: bold" href="mailto:${obj[s]}">${obj[s].toLowerCase()}</a></span><br/>`
+        }
+      }
+
+      return r
+
+
+      // <span style="font-color:black">email:</span> <span><a style="color: ${app.vars.cobalt}; font-weight: bold" href="mailto:${app.email}">${app.email.toLowerCase()}</a></span>
+      // <br/ >
+      // <span style="font-color:black">phone:</span> <span><a style="color: ${app.vars.cobalt}; font-weight: bold" href="tel:${app.phone}">${app.phone}</a></span>
+      // <br/ >
+    },
     signature: function () {
       var app = this
 
       const { errors, html } = mjml2html(`
         <mjml>
-          <mj-body>
-            <mj-container padding="0px">
-              <mj-section padding="0px">
-                <mj-group>
-                  <mj-column width="20%" padding="0px">
+          <mj-head>
+            <mj-attributes>
+              <mj-text padding="0" />
+              <mj-all font-family="Roboto, Helvetica, Arial, sans-serif" />
+              <mj-text align="left"/>
+            </mj-attributes>
+          </mj-head>
+          <mj-body >
+            <mj-container align="left">
+              <mj-section text-align="left" padding="0px" >
+                <mj-group style="width: 100%">
+                  <mj-column width="100px" padding="0px">
                     <mj-image padding="0px 20px 0px 0px" src="${app.image}"></mj-image>
                   </mj-column>
-                  <mj-column width="70%">
+                  <mj-column >
                     <mj-text
                       font-size="14px"
-                      font-family="Roboto, Helvetica, sans-serif"
                       align="left"
                       padding="10px 0px"
                       >
@@ -111,22 +150,18 @@ export default {
                     </mj-text>
                     <mj-text
                       font-size="14px"
-                      font-family="Roboto, Helvetica, sans-serif"
                       align="left"
                       padding="0px 0px 10px"
                       >
-                      <span style="font-color:black">email:</span> <span><a style="color: ${app.vars.cobalt}; font-weight: bold" href="mailto:${app.email}">${app.email.toLowerCase()}</a></span>
-                      <br/ >
-                      <span style="font-color:black">phone:</span> <span><a style="color: ${app.vars.cobalt}; font-weight: bold" href="tel:${app.phone}">${app.phone}</a></span>
-                      <br/ >
+                      ${app.contactInfo}
                     </mj-text>
                       <mj-social
-                        font-family="Roboto, Helvetica, sans-serif"
                         text-mode="false"
                         align="left"
                         inner-padding="5px"
                         padding="0px"
                         display="${app.socialNetworks}"
+
                         google-icon-color="${app.vars.yellow}"
                         facebook-icon-color="${app.vars.yellow}"
                         twitter-icon-color="${app.vars.yellow}"
@@ -137,7 +172,7 @@ export default {
                         twitter-href="${app.social.twitter}"
                         instagram-href="${app.social.instagram}"
                       />
-                    <mj-image padding="0px" src="/assets/plf-logo.png"></mj-image>
+                    <mj-image padding="20px 0px 10px" width="200px" align="left" src="https://github.com/Emergent-Order/plf-email-signatures/blob/master/assets/plf-logo.png?raw=true"></mj-image>
                   </mj-column>
                 </mj-group>
               </mj-section>
@@ -147,7 +182,45 @@ export default {
 
       `)
 
-      return html
+      const $ = cheerio.load(html)
+      var firstTable = $('table')[0]
+
+      $(firstTable).attr('style', "box-sizing: inherit; border-collapse: collapse; color: rgb(33, 37, 41); font-family: -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; orphans: 2; widows: 2; font-size: 0px;")
+      $(firstTable).css('width', '100%')
+      $(firstTable).attr('align', '')
+
+      console.log($('table')[0])
+
+      return $.html()
+    }
+  },
+  methods: {
+    selectText: function () {
+
+      if (document.selection) {
+          var content = document.getElementsTagName('table')[0]
+          console.log(content)
+          var range = document.body.createTextRange()
+          range.moveToElementText(content)
+          range.select();
+
+          // var controlRange = document.body.createControlRange();
+          // controlRange.addElement(content);
+          document.execCommand('Copy');
+      } else if (window.getSelection) {
+          var content = document.getElementsByTagName('table')[0]
+          console.log(content)
+          var range = document.createRange();
+          range.selectNode(content);
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(range);
+
+          // var controlRange = document.body.createControlRange();
+          // controlRange.addElement(content);
+          document.execCommand('Copy');
+      }
+
+      this.successtext = "Successfully copied!"
     }
   }
 }
@@ -157,8 +230,32 @@ export default {
 <style lang="sass">
   .container
     margin-top: 40px
+    margin-bottom: 40px
   .header
     margin-bottom: 40px
+  .form-control
+    border-radius: 0px
   #signature
-    border: 2px solid lighten(#4A4A4A, 50%)
+    border: 1px solid lighten(#4A4A4A, 55%)
+  .btn
+    background-color: #002997
+    border-radius: 0px
+    color: white
+    margin-top: 20px
+    font-size: 12px
+    text-transform: uppercase
+    letter-spacing: 1.5px
+    cursor: pointer
+    &:hover
+      background-color: darken(#002997, 5%)
+  h5
+    margin-bottom: 1rem
+  .form-wrapper
+    background-color: #F2F2F2
+    padding: 30px
+  .section-break
+    margin-top: 50px
+  .signature-renderer
+    padding: 10px
+
 </style>
