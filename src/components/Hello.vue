@@ -189,7 +189,7 @@ export default {
                       font-size="14px"
                       align="left"
                       padding="0px 0px 10px"
-                      line-height="20px"
+                      line-height="18px"
                       >
                       ${app.contactInfo}
                     </mj-text>
@@ -197,7 +197,7 @@ export default {
                       font-size="14px"
                       align="left"
                       padding="0px 0px 10px"
-                      line-height="20px"
+                      line-height="18px"
                       >
                       <span>930 G Street | Sacramento, CA 95814</span>
                     </mj-text>
