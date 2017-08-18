@@ -80,7 +80,8 @@ export default {
       social: {
         facebook: 'http://www.facebook.com/PacificLegalFoundation/',
         twitter: 'https://twitter.com/PacificLegal',
-        instagram: 'http://instagram.com/pacific_legal_foundation'
+        instagram: 'http://instagram.com/pacific_legal_foundation',
+        youtube: 'http://instagram.com/pacific_legal_foundation'
       },
       vars: {
         cobalt: '#0053BC',
@@ -136,7 +137,14 @@ export default {
       var r = ""
       for (var s in obj) {
         if(obj.hasOwnProperty(s) && obj[s]) {
-          r += `<mj-column><mj-button href="${obj[s]}"><mj-image src="https://github.com/Emergent-Order/plf-email-signatures/blob/master/assets/${s}-icon.png?raw=true"></mj-image></mj-button></mj-column>`
+          r += `<mj-social
+                  mode=""
+
+
+          <mj-column width="25%">
+                  <mj-button border-radius="0" background-color="${app.vars.yellow}" href="${obj[s]}" width="20px" height="20px" padding="0px 0px">
+                  </mj-button>
+                </mj-column>`
         }
       }
 
@@ -193,27 +201,37 @@ export default {
                       >
                       <span>930 G Street | Sacramento, CA 95814</span>
                     </mj-text>
-                    <mj-group>
-                      <mj-column>
+                    <mj-social
+                      mode="horizontal"
+                      border-radius="0px"
+                      text-mode="false"
+
+                      align="left"
+                      inner-padding="5px"
+                      padding="0px"
+                      display="${app.socialNetworks}"
+
+                      google-icon-color="${app.vars.yellow}"
+                      facebook-icon-color="${app.vars.yellow}"
+                      twitter-icon-color="${app.vars.yellow}"
+                      instagram-icon-color="${app.vars.yellow}"
 
 
-                      <mj-social
-                        text-mode="false"
-                        align="left"
-                        inner-padding="5px"
-                        padding="0px"
-                        display="${app.socialNetworks}"
+                      google-href="${app.social.google}"
+                      facebook-href="${app.social.facebook}"
+                      twitter-href="${app.social.twitter}"
+                      instagram-href="${app.social.instagram}"
 
-                        google-icon-color="${app.vars.yellow}"
-                        facebook-icon-color="${app.vars.yellow}"
-                        twitter-icon-color="${app.vars.yellow}"
-                        instagram-icon-color="${app.vars.yellow}"
+                      youtube-icon-color="${app.vars.yellow}"
+                      youtube-icon="https://github.com/Emergent-Order/plf-email-signatures/blob/master/assets/youtube-icon.png?raw=true"
+                      youtube-href="${app.social.youtube}"
 
-                        google-href="${app.social.google}"
-                        facebook-href="${app.social.facebook}"
-                        twitter-href="${app.social.twitter}"
-                        instagram-href="${app.social.instagram}"
-                      />
+
+
+
+
+                    ></mj-social>
+
                     <mj-image padding="20px 0px 10px" width="200px" align="left" src="https://github.com/Emergent-Order/plf-email-signatures/blob/master/assets/plf-logo.png?raw=true"></mj-image>
                   </mj-column>
                 </mj-group>
